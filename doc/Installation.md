@@ -66,11 +66,17 @@ Anyone knowing it can authenticate as any user to the XMPP server
 
 ### ejabberd
 Adjust your configuration as described in the [admin manual](https://docs.ejabberd.im/admin/configuration/#external-script).
-```
-vim /etc/ejabberd/ejabberd.yml
+```yaml
+nano /etc/ejabberd/ejabberd.yml
 
 auth_method: external
-extauth_program: "/opt/xmpp-cloud-auth/xcauth.sh"
+extauth_program: "/usr/bin/socket 127.0.0.1 23662"
+auth_use_cache: false
+```
+and then enable xcauth in [systemd](../doc/Systemd.md)
+```
+sudo systemctl enable xcejabberd.socket
+sudo systemctl start xcauth.service
 ```
 :warning: On Ubuntu, `ejabberd` will come with an **apparmor** profile which will block the external authentication script.
 See also the related issue [ejabberd#1598](https://github.com/processone/ejabberd/issues/1598).
@@ -78,23 +84,7 @@ See also the related issue [ejabberd#1598](https://github.com/processone/ejabber
 :warning: This starts `xcauth.sh`, as some **ejabberd** installations will lead to shared library conflicts,
 preventing HTTPS access from within Python. The shell wrapper prevents this conflict.
 ([ejabberd#1756](https://github.com/processone/ejabberd/issues/1756))
-
-:warning: Starting with *ejabberd 17.06* (which has a security problem,
-so please update to 17.07 or later), *ejabberd* uses a built-in authentication
-cache.
-This cache interferes with multiple valid passwords (app passwords, tokens)
-and thus needs to be deactivated with `auth_use_cache: false`.
-
-:warning: If you want to host multiple instances,
-```yaml
-extauth_program: "/usr/bin/socket 127.0.0.1 23662"
-```
-and using the [*systemd* socket activation mode](../doc/Systemd.md)
-will conserve significant amounts of memory. (In the first case, *ejabberd*
-starts one large *Python* process per virtual host, while in the second
-case, there will only be one (slightly larger) *Python* process and many
-tiny *socket* processes talking to individual threads in the *Python*
-process.)
+additional information on services, sockets and systemd is [here](../doc/Systemd.md)
 
 ### Prosody
 Install *lua-lpty* (not necessary when using the [*socket mode*](#socket-interface):
