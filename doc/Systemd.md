@@ -36,7 +36,7 @@ or do not start `xcsaslauth.socket`.
 
 ### Testing
 
-Trye the following (`$` indicates the command line prompt, `<` is data received and `>` data sent):
+Try the following (`$` indicates the command line prompt, `<` is data received and `>` data sent):
 
 ```
 $ telnet localhost 23663
@@ -53,7 +53,7 @@ $ telnet localhost 23663
 < Connection closed by foreign host.
 $
 ```
-
+if you are sure that user and password are valid but you are still getting 0 (failed) then try to login with the credentials to nextcloud, if even that does not work and you created the account with an email address, then nextcloud sent an activation mail to the mail address and waits untill the recipient activates their account.
 ## `saslauthd` mode (authentication)
 
 To use *xcauth.py* as an authentication backend for e.g. mail servers
